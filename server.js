@@ -1,9 +1,16 @@
 // import and create an instance of the express package for node
+require('dotenv').config();
+const jwt = require('jsonwebtoken');
+// imports from auth.js 
+const { authenticateToken, requireBarber } = require('./middleware/auth.js');
+
+
 const express = require('express');
 const db = require('./database/db'); // runs db.js
 const app = express();  
 const port = process.env.PORT || 8080;
 const path = require('path');
+const bcrypt = require('bcrypt');
 
 
 // Middleware to parse JSON request bodies
@@ -35,7 +42,6 @@ app.post('/register', (req, res) => {
 		const { email, password, role, first_name, last_name} = req.body;
 
 		// Hash my passwords before storing in db
-		const bcrypt = require('bcrypt');
 		const saltRounds = 10;
 		const password_hash = bcrypt.hashSync(password, saltRounds);
 
@@ -57,6 +63,52 @@ app.post('/register', (req, res) => {
 		});
 	} catch (error) { 
 	res.status(500).json({ error: error.message });
+	}
+});
+
+// login route
+app.post('/login', (req, res) => {
+	const {email, password} = req.body;
+	
+	// same as const email = req.body.email;
+	// const password = req.body.password; => destructuring
+	
+	// check the form doesn't lack an input
+	if(!email || !password) { 
+		return res.status(400).json({ error: 'Email and password are required'});
+	}
+
+	try { 
+		const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+
+		if(!user) { 
+			return res.status(401).json({ error: 'Invalid credentials'});
+		}
+	
+
+		// compare inputted password with stored hashed password
+		const passwordMatch = bcrypt.compareSync(pasword, user.password_hash);
+	
+		if(!passwordMatch) { 
+		return res.status(401).json({error: 'Invalid credentials'});
+		}
+
+		// JWT payload
+		const payload = { 
+			userId: user.id, 
+			role: user.role, 
+			firstName: user.first_name
+		};
+
+		const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '8h' });
+
+		res.json({
+			message: 'Login successful', 
+			token, 
+			role: user.role
+		});
+	} catch (error) { 
+		res.status(500).json({ error: error.message });
 	}
 });
 
