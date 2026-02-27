@@ -87,7 +87,7 @@ app.post('/login', (req, res) => {
 	
 
 		// compare inputted password with stored hashed password
-		const passwordMatch = bcrypt.compareSync(pasword, user.password_hash);
+		const passwordMatch = bcrypt.compareSync(password, user.password_hash);
 	
 		if(!passwordMatch) { 
 		return res.status(401).json({error: 'Invalid credentials'});
@@ -107,6 +107,52 @@ app.post('/login', (req, res) => {
 			token, 
 			role: user.role
 		});
+	} catch (error) { 
+		res.status(500).json({ error: error.message });
+	}
+});
+
+// Add a service (barber only route)
+app.post('/services', authenticateToken, requireBarber, (req, res) => {
+	// destructure the request object body 
+	const name = req.body.name;
+	const duration_minutes = req.body.duration_minutes;
+	const price = req.body.price;
+
+	if(!name || !duration_minutes || !price) { 
+		return res.status(400).json({ error: 'Name, duration and price are required' });
+	}
+
+	try { 
+		// prepare the SQL statement to avoid injection
+		const stmt = db.prepare(`
+			INSERT INTO services (barber_id, name, duration_minutes, price)
+			VALUES (?, ?, ? ,?)
+			`);
+
+		// database substitutes ? placeholders with the values provided
+		const result = stmt.run(req.user.userId, name, duration_minutes, price);
+
+		// return a http status 201 if succesful
+		res.status(201).json({
+			message: 'Service created successfully', 
+			serviceId: result.lastInsertRowid
+		});
+
+
+	} catch (error) { 
+		res.status(500).json({ error: error.message });
+	}
+});
+
+// Get request route for all services (logged in as barber)
+app.get('/services', authenticateToken, requireBarber, (req, res) => {
+
+	try { 
+		const services = db.prepare(`
+		SELECT * FROM services WHERE barber_id = ?
+		`).all(req.user.userId);
+		res.json(services);
 	} catch (error) { 
 		res.status(500).json({ error: error.message });
 	}
