@@ -145,6 +145,42 @@ app.post('/services', authenticateToken, requireBarber, (req, res) => {
 	}
 });
 
+// Update a service (barber only) PUT request
+app.put('/services/:id', authenticateToken, requireBarber, (req, res) => {
+	
+	// Grab the service ID from the URL params
+	const serviceID = req.params.id;
+	// destructure the req object body
+	// const {email, password} = req.body;
+	const {name, duration_minutes, price} = req.body;
+
+
+	if(!name || !duration_minutes || !price) {
+		return res.status(400).json({ error: 'Name, duration and/or price not found' });
+	}
+
+	try {
+		// prepare the SQL statement to avoid injection
+		// WHERE id = ? AND barber_id = ? handles ownership of the service
+		// only update the row where both conditions are true, service id matches barber_id
+		const stmt = db.prepare(`
+			UPDATE services SET name = ?, duration_minutes = ?, price = ?
+			WHERE id = ? AND barber_id = ?
+			`);
+
+		// database substitutes ? placeholders with the values provided
+		const result = stmt.run(name, duration_minutes, price, serviceID, req.user.userId);
+
+		if(result.changes === 0) {
+			return res.status(404).json({ error: 'Service not found or not owned by you' });
+		}
+
+		res.json({ message: 'Service updated successfully' });
+	} catch(error) {
+		res.status(500).json({ error: error.message });
+	}
+});
+
 // Get request route for all services (logged in as barber)
 app.get('/services', authenticateToken, requireBarber, (req, res) => {
 
