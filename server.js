@@ -194,6 +194,18 @@ app.get('/services', authenticateToken, requireBarber, (req, res) => {
 	}
 });
 
+// Delete request to remove data from database
+app.delete('/services/:id', authenticateToken, requireBarber, (req, res) => {
+	const result = db.prepare('DELETE FROM services WHERE id = ? AND barber_id = ?').run(req.params.id, req.user.userId);
+
+	if(result.changes === 0) { 
+		return res.status(404).json({ error: 'Service not found' });
+	}
+
+	res.json({ message: 'Service deleted' });
+
+});
+
 // Start the server
 app.listen(port, () => { 
 	console.log(`Server running on http://localhost:${port}`);
