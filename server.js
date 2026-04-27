@@ -206,6 +206,22 @@ app.delete('/services/:id', authenticateToken, requireBarber, (req, res) => {
 
 });
 
+// Get all barbers (public route)
+app.get('/barbers', (req, res) => { 
+	const barbers = db.prepare('SELECT id, first_name, last_name FROM users WHERE role = ?').all('barber');
+
+	res.json(barbers);
+
+});
+
+// GET a barber's services ( public route )
+app.get('/barbers/:id/services', (req, res) => { 
+	const services = db.prepare('SELECT id, name, duration_minutes, price FROM services WHERE barber_id = ?').all(req.params.id);
+
+	res.json(services);
+
+});
+
 // Start the server
 app.listen(port, () => { 
 	console.log(`Server running on http://localhost:${port}`);
