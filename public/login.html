@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LocalAreaBarber - Login</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>LocalAreaBarber</h1>
+
+    <div class="tabs">
+      <button id="login-tab" class="tab active" onclick="showLogin()">Login</button>
+      <button id="register-tab" class="tab" onclick="showRegister()">Register</button>
+    </div>
+
+    <div id="login-form">
+      <input type="email" id="login-email" placeholder="Email">
+      <input type="password" id="login-password" placeholder="Password">
+      <button onclick="login()">Login</button>
+    </div>
+
+    <div id="register-form" style="display: none;">
+      <input type="text" id="register-first-name" placeholder="First Name">
+      <input type="text" id="register-last-name" placeholder="Last Name">
+      <input type="email" id="register-email" placeholder="Email">
+      <input type="password" id="register-password" placeholder="Password">
+      <select id="register-role">
+        <option value="customer">Customer</option>
+        <option value="barber">Barber</option>
+      </select>
+      <button onclick="register()">Register</button>
+    </div>
+
+    <p id="message"></p>
+  </div>
+
+  <script src="/js/login.js"></script>
+</body>
+</html>

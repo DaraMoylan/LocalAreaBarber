@@ -15,6 +15,8 @@ const bcrypt = require('bcrypt');
 
 // Middleware to parse JSON request bodies
 app.use(express.json());
+// Serve the files inside the public folder
+app.use(express.static('public'));
 
 // adds req.body properties to the users form inputs
 app.use(express.urlencoded({extended: false}));

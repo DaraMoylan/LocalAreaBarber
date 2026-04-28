@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(180deg, #87CEEB, #c8e8ff, #ffffff);
+  min-height: 100vh;
+  color: #333;
+}
+
+.container {
+  max-width: 500px;
+  margin: 60px auto;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-family: 'Fredoka One', cursive;
+  font-size: 28px;
+  color: #ff69b4;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.tab.active {
+  background: #ff69b4;
+  color: white;
+  box-shadow: 0 2px 8px rgba(255, 105, 180, 0.4);
+}
+
+input, select {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  border-radius: 8px;
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #ff69b4;
+  box-shadow: 0 0 6px rgba(255, 105, 180, 0.3);
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(180deg, #ff85c8, #ff69b4);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(255, 105, 180, 0.3);
+}
+
+button:hover {
+  background: linear-gradient(180deg, #ff9ed4, #ff7ebf);
+  box-shadow: 0 4px 12px rgba(255, 105, 180, 0.4);
+}
+
+#message {
+  text-align: center;
+  margin-top: 15px;
+  color: #e74c3c;
+}
