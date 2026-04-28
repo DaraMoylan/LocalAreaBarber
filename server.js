@@ -222,6 +222,37 @@ app.get('/barbers/:id/services', (req, res) => {
 
 });
 
+// POST /bookings
+app.post('/bookings', authenticateToken, (req, res) => { 
+	const { service_id, booking_datetime } = req.body;
+
+	// check the service exists
+	const service = db.prepare('SELECT * FROM services WHERE id = ?')
+	.get(service_id);
+
+	if(!service) { 
+		return res.status(404).json({ error: 'Service not found' });
+	}
+
+	// check time slot is available for this barber
+	const conflict = db.prepare(
+	'SELECT id FROM bookings WHERE service_id IN (SELECT id FROM services WHERE barber_id = ?) AND booking_datetime = ? AND status != ?'
+	).get(service.barber_id, booking_datetime, 'cancelled');
+
+	if(conflict) { 
+		return res.status(409).json({ error: 'Time slot not available '});
+	}
+
+	const result = db.prepare(
+	'INSERT INTO bookings (customer_id, service_id, booking_datetime) VALUES (?, ?, ?)'
+	).run(req.user.userId, service_id, booking_datetime);
+
+	res.status(201).json({
+		message: 'Booking created', 
+		booking_id: result.lastInsertRowid
+	});
+});
+
 // Start the server
 app.listen(port, () => { 
 	console.log(`Server running on http://localhost:${port}`);
