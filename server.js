@@ -253,6 +253,36 @@ app.post('/bookings', authenticateToken, (req, res) => {
 	});
 });
 
+// GET customer's bookings
+app.get('/bookings', authenticateToken, (req, res) => { 
+	const bookings = db.prepare(`
+		SELECT b.id, b.booking_datetime, b.status, 
+		s.name AS service_name, s.price, s.duration_minutes, 
+		u.first_name AS barber_first_name, u.last_name AS barber_last_name
+		FROM bookings b
+		JOIN services s ON b.service_id = s.id
+		JOIN users u ON s.barber_id = u.id
+		WHERE b.customer_id = ?
+	`). all(req.user.userId);
+
+	res.json(bookings);
+});
+
+// Get barber's bookings
+app.get('/barber/bookings', authenticateToken, requireBarber, (req, res) => {
+  const bookings = db.prepare(`
+    SELECT b.id, b.booking_datetime, b.status,
+           s.name AS service_name, s.price, s.duration_minutes,
+           u.first_name AS customer_first_name, u.last_name AS customer_last_name
+    FROM bookings b
+    JOIN services s ON b.service_id = s.id
+    JOIN users u ON b.customer_id = u.id
+    WHERE s.barber_id = ?
+  `).all(req.user.userId);
+
+  res.json(bookings);
+});
+
 // Start the server
 app.listen(port, () => { 
 	console.log(`Server running on http://localhost:${port}`);
