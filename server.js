@@ -283,6 +283,31 @@ app.get('/barber/bookings', authenticateToken, requireBarber, (req, res) => {
   res.json(bookings);
 });
 
+// Update booking status (cancel)
+app.patch('/bookings/:id', authenticateToken, (req, res) => {
+  const { status } = req.body;
+
+  if (status !== 'cancelled') {
+    return res.status(400).json({ error: 'Only cancellation is allowed' });
+  }
+
+  const booking = db.prepare('SELECT * FROM bookings WHERE id = ? AND customer_id = ?')
+    .get(req.params.id, req.user.userId);
+
+  if (!booking) {
+    return res.status(404).json({ error: 'Booking not found' });
+  }
+
+  if (booking.status === 'cancelled') {
+    return res.status(400).json({ error: 'Booking is already cancelled' });
+  }
+
+  db.prepare('UPDATE bookings SET status = ? WHERE id = ?')
+    .run('cancelled', req.params.id);
+
+  res.json({ message: 'Booking cancelled' });
+});
+
 // Start the server
 app.listen(port, () => { 
 	console.log(`Server running on http://localhost:${port}`);
