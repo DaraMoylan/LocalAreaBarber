@@ -21,6 +21,11 @@ async function login() {
   const email = document.getElementById('login-email').value;
   const password = document.getElementById('login-password').value;
 
+  // Add input validation
+  if(!email || !password) { 
+    document.getElementById('message').textContent = 'Please fill in all fields';
+    return;
+  }
   // Hit the /login endpoint in Server.js
   const response = await fetch('/login', {
     method: 'POST',
@@ -53,6 +58,12 @@ async function register() {
   const email = document.getElementById('register-email').value;
   const password = document.getElementById('register-password').value;
   const role = document.getElementById('register-role').value;
+
+  // Same craic - add input validation
+  if(!first_name || !last_name || !email || !password || !role) { 
+    document.getElementById('message').textContent = 'Please fill in all fields';
+    return;
+  }
 
 // git the /register endpoint
   const response = await fetch('/register', {
