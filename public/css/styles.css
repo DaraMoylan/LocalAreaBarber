@@ -95,3 +95,45 @@ button:hover {
   margin-top: 15px;
   color: #e74c3c;
 }
+.dashboard-header {
+  text-align: center;
+  padding: 15px;
+  background: linear-gradient(180deg, #ff85c8, #ff69b4);
+}
+
+.dashboard-header h1 {
+  margin-bottom: 10px;
+}
+
+.logout-btn {
+  width: auto;
+  padding: 8px 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+}
+
+.section {
+  margin-top: 20px;
+}
+
+.card {
+  padding: 15px;
+  margin-bottom: 10px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  background: rgba(255, 105, 180, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cancel-btn {
+  width: auto;
+  padding: 6px 14px;
+  margin-top: 8px;
+  background: #e74c3c;
+  font-size: 14px;
+}

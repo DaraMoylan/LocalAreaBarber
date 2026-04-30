@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LocalAreaBarber - Customer Dashboard</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div class="dashboard-header">
+    <h1>LocalAreaBarber</h1>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <div class="container">
+    <h2>Welcome, <span id="customer-name"></span></h2>
+
+    <div class="section">
+      <h3>Choose a Barber</h3>
+      <div id="barber-list"></div>
+    </div>
+
+    <div class="section" id="services-section" style="display: none;">
+      <h3>Available Services</h3>
+      <div id="services-list"></div>
+    </div>
+
+    <div class="section" id="booking-section" style="display: none;">
+      <h3>Pick a Time</h3>
+      <input type="datetime-local" id="booking-time">
+      <button onclick="createBooking()">Book Appointment</button>
+    </div>
+
+    <div class="section">
+      <h3>My Bookings</h3>
+      <div id="bookings-list"></div>
+    </div>
+  </div>
+
+  <p id="message"></p>
+
+  <script src="/js/customer.js"></script>
+</body>
+</html>	
