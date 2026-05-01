@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LocalAreaBarber - Barber Dashboard</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div class="dashboard-header">
+    <h1>LocalAreaBarber</h1>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <div class="container">
+    <h2>Welcome, <span id="barber-name"></span></h2>
+
+    <div class="section">
+      <h3>Add a Service</h3>
+      <input type="text" id="service-name" placeholder="Service name">
+      <input type="number" id="service-duration" placeholder="Duration (minutes)">
+      <input type="number" id="service-price" placeholder="Price (€)">
+      <button onclick="addService()">Add Service</button>
+    </div>
+
+    <div class="section">
+      <h3>My Services</h3>
+      <div id="services-list"></div>
+    </div>
+
+    <div class="section">
+      <h3>My Bookings</h3>
+      <div id="bookings-list"></div>
+    </div>
+  </div>
+
+  <p id="message"></p>
+
+  <script src="/js/barber.js"></script>
+</body>
+</html>
