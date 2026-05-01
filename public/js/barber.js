@@ -55,7 +55,7 @@ async function loadServices() {
 *  Function to flip the display of the two divs
 */
 function showEdit(serviceId) { 
-	const card = document.getElementByid(`service-${serviceId}`);
+	const card = document.getElementById(`service-${serviceId}`);
 	card.querySelector('.service-display').style.display = 'none';
 	card.querySelector('.service-edit').style.display = 'block';
 }
@@ -113,7 +113,7 @@ async function addService() {
 */
 async function saveEdit(serviceId) { 
 	const name = document.getElementById(`edit-name-${serviceId}`).value;
-	const duration_minutes = document.getElementById(`edit-duration-${serviceid}`).value;
+	const duration_minutes = document.getElementById(`edit-duration-${serviceId}`).value;
 	const price = document.getElementById(`edit-price-${serviceId}`).value;
 
 	const response = await fetch(`/services/${serviceId}`, {
@@ -174,7 +174,7 @@ async function loadBookings() {
 	
 	const bookings = await response.json();
 
-	const bookingList = document.getElementById('bookings-list');
+	const bookingsList = document.getElementById('bookings-list');
 
 	if(bookings.length === 0) {
 		bookingsList.innerHTML = '<p>No bookings yet</p>';

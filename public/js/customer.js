@@ -7,13 +7,14 @@ if(!token) {
 	window.location.href = '/login.html';
 }
 
+
+
+// decode the token to get the customer's name
+const payload = JSON.parse(atob(token.split('.')[1]));
 // Role check
 if(payload.role !== 'customer') { 
 	window.location.href = '/login.html';
 }
-
-// decode the token to get the customer's name
-const payload = JSON.parse(atob(token.split('.')[1]));
 document.getElementById('customer-name').textContent = payload.firstName;
 
 let selectedServiceId = null;
