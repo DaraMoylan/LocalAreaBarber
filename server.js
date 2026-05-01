@@ -47,6 +47,8 @@ app.post('/register', (req, res) => {
 		const saltRounds = 10;
 		const password_hash = bcrypt.hashSync(password, saltRounds);
 
+	// add a try/catch
+	try{
 		// prepare SQL insert statement
 		const stmt = db.prepare(`
 			INSERT INTO users (email, password_hash, role, first_name, last_name)
@@ -56,13 +58,20 @@ app.post('/register', (req, res) => {
 		// Execute the statement
 
 		const result = stmt.run(email, password_hash, role, first_name, last_name);
-
 		// send success response if it works
 		// 201 is status code for resource created successfully
+
 		res.status(201).json({
 			message: 'User created successfully', 
 			userId: result.lastInsertRowid
 		});
+
+	} catch(error) { 
+		if(error.message.includes('UNIQUE constraint failed')) { 
+			return res.status(400).json({ error: 'An account with this email already exists'});
+		}
+		return res.status(500).json({ error: 'Something went wrong'});
+		}
 	} catch (error) { 
 	res.status(500).json({ error: error.message });
 	}
