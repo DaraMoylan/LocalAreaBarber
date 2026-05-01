@@ -137,3 +137,16 @@ button:hover {
   background: #e74c3c;
   font-size: 14px;
 }
+.edit-btn {
+  width: auto;
+  padding: 6px 14px;
+  margin-top: 8px;
+  margin-right: 8px;
+  background: #3498db;
+  font-size: 14px;
+  display: inline-block;
+}
+
+.service-edit input {
+  margin-bottom: 8px;
+}
