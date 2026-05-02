@@ -184,7 +184,7 @@ async function loadBookings() {
 	bookingsList.innerHTML = bookings.map(booking =>
 		`<div class="card">
 		<strong>${booking.service_name}</strong>
-		<p>${bookings.customer_first_name} ${booking.customer_last_name}</p>
+		<p>${booking.customer_first_name} ${booking.customer_last_name}</p>
 		<p>${booking.booking_datetime} - ${booking.status}</p>
 		</div>`
 	).join('');
