@@ -2,11 +2,34 @@
 
 const token = localStorage.getItem('token');
 
-if(!token) { 
-	window.location.href = '/login.html';
+/*
+* Function to check if the token exists and/or is expired
+* @param: token from localStorage
+* @return {JSON payload}
+*/
+function checkToken(token) { 
+	if(!token) {
+		window.location.href = '/login.html';
+		return false;
+	}
+	
+	const payload = JSON.parse(atob(token.split('.')[1]));
+	const now = Math.floor(Date.now() / 1000);
+
+	if(payload.exp < now) { 
+		localStorage.removeItem('token');
+		localStorage.removeItem('role');
+		window.location.href = '/login.html';
+		return false;
+	}
+
+	return payload;
 }
 
-const payload = JSON.parse(atob(token.split('.')[1]));
+const payload = checkToken(token);
+if(!payload) { 
+	throw new Error('Invalid token');
+}
 
 // check that the user is a barber
 if(payload.role !== 'barber') { 
@@ -20,12 +43,14 @@ document.getElementById('barber-name').textContent = payload.firstName;
 * requires the requireBarber token
 */
 async function loadServices() { 
+	const servicesList = document.getElementById('services-list');
+	servicesList.innerHTML = '<p>Loading services...</p>';
+	
 	const response = await fetch('/services', { 
 		headers: { 'Authorization': `Bearer ${token}`}
 	});
 
 	const services = await response.json();
-	const servicesList = document.getElementById('services-list');
 	if(services.length === 0) { 
 		servicesList.innerHTML = '<p>Please add a service</p>';
 		return

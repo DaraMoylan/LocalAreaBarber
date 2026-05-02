@@ -2,15 +2,34 @@
 
 const token = localStorage.getItem('token');
 
-// check for the JWT Token and handle the situation
-if(!token) { 
-	window.location.href = '/login.html';
+/*
+* Function to check if the token exists and/or is expired
+* @param: token from localStorage
+* @return {JSON payload}
+*/
+function checkToken(token) { 
+	if(!token) {
+		window.location.href = '/login.html';
+		return false;
+	}
+	
+	const payload = JSON.parse(atob(token.split('.')[1]));
+	const now = Math.floor(Date.now() / 1000);
+
+	if(payload.exp < now) { 
+		localStorage.removeItem('token');
+		localStorage.removeItem('role');
+		window.location.href = '/login.html';
+		return false;
+	}
+
+	return payload;
 }
 
-
-
-// decode the token to get the customer's name
-const payload = JSON.parse(atob(token.split('.')[1]));
+const payload = checkToken(token);
+if(!payload) { 
+	throw new Error('Invalid token');
+}
 // Role check
 if(payload.role !== 'customer') { 
 	window.location.href = '/login.html';
@@ -31,6 +50,7 @@ async function loadBarbers() {
 
 	if(barbers.length === 0) {
 		barberList.innerHTML = '<p>No barbers available</p>';
+		return;
 	}
 // manual DOM manipulation
 	barberList.innerHTML = barbers.map(barber => 
