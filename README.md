@@ -1,6 +1,6 @@
 # LocalAreaBarber
 
-A web application that connects customers with local barbers. Barbers can manage their services and view appointments, while customers can browse barbers, book appointments, and manage their bookings.
+A web application that connects customers with barbers. Barbers can manage their services and view appointments, while customers can browse barbers, book appointments, and manage their bookings.
 
 ## Tech Stack
 
