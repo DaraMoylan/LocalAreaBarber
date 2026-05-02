@@ -237,6 +237,13 @@ app.get('/barbers/:id/services', (req, res) => {
 app.post('/bookings', authenticateToken, (req, res) => { 
 	const { service_id, booking_datetime } = req.body;
 
+	// Prevent bookings into the past
+	const now = new Date();
+	const bookingDate = new Date(booking_datetime);
+	if(bookingDate <= now) {
+		return res.status(400).json({ error: 'Cannot book a time in the past' });
+	}
+
 	// check the service exists
 	const service = db.prepare('SELECT * FROM services WHERE id = ?')
 	.get(service_id);

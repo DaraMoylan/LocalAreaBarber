@@ -94,6 +94,8 @@ button:hover {
   text-align: center;
   margin-top: 15px;
   color: #e74c3c;
+  font-size: 18px;
+  font-weight: bold;
 }
 .dashboard-header {
   text-align: center;
