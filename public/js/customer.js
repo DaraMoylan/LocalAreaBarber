@@ -2,15 +2,34 @@
 
 const token = localStorage.getItem('token');
 
-// check for the JWT Token and handle the situation
-if(!token) { 
-	window.location.href = '/login.html';
+/*
+* Function to check if the token exists and/or is expired
+* @param: token from localStorage
+* @return {JSON payload}
+*/
+function checkToken(token) { 
+	if(!token) {
+		window.location.href = '/login.html';
+		return false;
+	}
+	
+	const payload = JSON.parse(atob(token.split('.')[1]));
+	const now = Math.floor(Date.now() / 1000);
+
+	if(payload.exp < now) { 
+		localStorage.removeItem('token');
+		localStorage.removeItem('role');
+		window.location.href = '/login.html';
+		return false;
+	}
+
+	return payload;
 }
 
-
-
-// decode the token to get the customer's name
-const payload = JSON.parse(atob(token.split('.')[1]));
+const payload = checkToken(token);
+if(!payload) { 
+	throw new Error('Invalid token');
+}
 // Role check
 if(payload.role !== 'customer') { 
 	window.location.href = '/login.html';
@@ -20,12 +39,20 @@ document.getElementById('customer-name').textContent = payload.firstName;
 let selectedServiceId = null;
 
 // function to load barbers by querying /barbers endpoint
-async function loadBarbers() { 
+async function loadBarbers() {
+
+	// Add loading state while function fetches
+	const barberList = document.getElementById('barber-list');
+	barberList.innerHTML = '<p>Loading barbers...</p>';
+
 	const response = await fetch('/barbers');
 	const barbers = await response.json();
 
+	if(barbers.length === 0) {
+		barberList.innerHTML = '<p>No barbers available</p>';
+		return;
+	}
 // manual DOM manipulation
-	const barberList = document.getElementById('barber-list');
 	barberList.innerHTML = barbers.map(barber => 
 		`<div class="card" onclick="loadServices(${barber.id})">
 		${barber.first_name} ${barber.last_name}
