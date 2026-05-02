@@ -167,14 +167,17 @@ async function deleteService(serviceId) {
 * Function that sends a GET request to /barber/booings endpoint
 * maps the bookings to the html
 */
-async function loadBookings() { 
+async function loadBookings() {
+
+	const bookingsList = document.getElementById('bookings-list');
+	bookingsList.innerHTML = '<p>Loading bookings...</p>';
+	
 	const response = await fetch('/barber/bookings', { 
 		headers: { 'Authorization': `Bearer ${token}`, }
 	});
 	
 	const bookings = await response.json();
 
-	const bookingsList = document.getElementById('bookings-list');
 
 	if(bookings.length === 0) {
 		bookingsList.innerHTML = '<p>No bookings yet</p>';

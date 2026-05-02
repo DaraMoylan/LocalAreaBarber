@@ -20,12 +20,19 @@ document.getElementById('customer-name').textContent = payload.firstName;
 let selectedServiceId = null;
 
 // function to load barbers by querying /barbers endpoint
-async function loadBarbers() { 
+async function loadBarbers() {
+
+	// Add loading state while function fetches
+	const barberList = document.getElementById('barber-list');
+	barberList.innerHTML = '<p>Loading barbers...</p>';
+
 	const response = await fetch('/barbers');
 	const barbers = await response.json();
 
+	if(barbers.length === 0) {
+		barberList.innerHTML = '<p>No barbers available</p>';
+	}
 // manual DOM manipulation
-	const barberList = document.getElementById('barber-list');
 	barberList.innerHTML = barbers.map(barber => 
 		`<div class="card" onclick="loadServices(${barber.id})">
 		${barber.first_name} ${barber.last_name}
