@@ -36,6 +36,21 @@ if(payload.role !== 'customer') {
 }
 document.getElementById('customer-name').textContent = payload.firstName;
 
+/*
+* function to format the Dates 
+*/
+function formatDate(dateString) { 
+	const date = new Date(dateString);
+	return date.toLocaleString('en-IE', {
+		day: 'numeric',
+		month: 'short',
+		year: 'numeric',
+		hour: '2-digit',
+		minute: '2-digit'
+	});
+}
+
+
 let selectedServiceId = null;
 
 // function to load barbers by querying /barbers endpoint
@@ -137,7 +152,7 @@ async function loadBookings() {
 	bookingsList.innerHTML = bookings.map(booking =>
 		`<div class="card">
      	 <strong>${booking.service_name}</strong> with ${booking.barber_first_name} ${booking.barber_last_name}
-     	 <p>${booking.booking_datetime} - ${booking.status}</p>
+     	 <p>${formatDate(booking.booking_datetime)} - ${booking.status}</p>
      		 ${booking.status !== 'cancelled' ?
         `<button class="cancel-btn" onclick="cancelBooking(${booking.id})">Cancel</button>` : ''}
    	 </div>`

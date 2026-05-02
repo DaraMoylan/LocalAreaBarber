@@ -39,6 +39,20 @@ if(payload.role !== 'barber') {
 document.getElementById('barber-name').textContent = payload.firstName;
 
 /*
+* function to format the Dates 
+*/
+function formatDate(dateString) { 
+	const date = new Date(dateString);
+	return date.toLocaleString('en-IE', {
+		day: 'numeric',
+		month: 'short',
+		year: 'numeric',
+		hour: '2-digit',
+		minute: '2-digit'
+	});
+}
+
+/*
 * Function that his the /services endpoint
 * requires the requireBarber token
 */
@@ -213,7 +227,7 @@ async function loadBookings() {
 		`<div class="card">
 		<strong>${booking.service_name}</strong>
 		<p>${booking.customer_first_name} ${booking.customer_last_name}</p>
-		<p>${booking.booking_datetime} - ${booking.status}</p>
+		<p>${formatDate(booking.booking_datetime)} - ${booking.status}</p>
 		</div>`
 	).join('');
 }
