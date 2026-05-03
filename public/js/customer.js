@@ -50,13 +50,24 @@ function formatDate(dateString) {
 	});
 }
 
+/*
+* Function to highlight the particular barber you clicked on
+*/
+function selectBarber(barberId) { 
+// Remove selected from all barber cards
+	document.querySelectorAll('#barber-list .card').forEach(card => {
+		card.classList.remove('selected');
+	});
+
+	// Add selected to the clicked one
+	document.getElementById(`barber-${barberId}`).classList.add('selected');
+	loadServices(barberId);
+}
 
 let selectedServiceId = null;
 
 // function to load barbers by querying /barbers endpoint
 async function loadBarbers() {
-
-	// Add loading state while function fetches
 	const barberList = document.getElementById('barber-list');
 	barberList.innerHTML = '<p>Loading barbers...</p>';
 
@@ -67,9 +78,9 @@ async function loadBarbers() {
 		barberList.innerHTML = '<p>No barbers available</p>';
 		return;
 	}
-// manual DOM manipulation
+
 	barberList.innerHTML = barbers.map(barber => 
-		`<div class="card" onclick="loadServices(${barber.id})">
+		`<div class="card" id="barber-${barber.id}" onclick="selectBarber(${barber.id})">
 		${barber.first_name} ${barber.last_name}
 		</div>`
 	).join('');
@@ -89,14 +100,19 @@ async function loadServices(barberId) {
 	}
 
 	servicesList.innerHTML = services.map(service => 
-		`<div class="card" onclick="selectService(${service.id})">
+		`<div class="card" id="service-${service.id}" onclick="selectService(${service.id})">
 		<strong>${service.name}</strong>
 		<p>${service.duration_minutes} mins - €${service.price}</p>
 		</div>`
 	).join('');
 }
 
-function selectService(serviceId) { 
+function selectService(serviceId, event) { 
+
+	document.querySelectorAll('#services-list .card').forEach(card => {
+		card.classList.remove('selected');
+	});
+	document.getElementById(`service-${serviceId}`).classList.add('selected');
 	selectedServiceId = serviceId;
 	document.getElementById('booking-section').style.display = 'block';
 }

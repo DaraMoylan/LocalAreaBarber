@@ -152,3 +152,8 @@ button:hover {
 .service-edit input {
   margin-bottom: 8px;
 }
+
+.card.selected { 
+  border: 2px solid #ff69b4;
+  background: rgba(255, 105, 180, 0.15);
+}
