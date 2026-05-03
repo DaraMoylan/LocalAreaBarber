@@ -305,27 +305,51 @@ app.get('/barber/bookings', authenticateToken, requireBarber, (req, res) => {
 app.patch('/bookings/:id', authenticateToken, (req, res) => {
   const { status } = req.body;
 
-  if (status !== 'cancelled') {
-    return res.status(400).json({ error: 'Only cancellation is allowed' });
+  // Customers can only cancel
+  if (req.user.role === 'customer') {
+    if (status !== 'cancelled') {
+      return res.status(400).json({ error: 'Only cancellation is allowed' });
+    }
+
+    const booking = db.prepare('SELECT * FROM bookings WHERE id = ? AND customer_id = ?')
+      .get(req.params.id, req.user.userId);
+
+    if (!booking) {
+      return res.status(404).json({ error: 'Booking not found' });
+    }
+
+    if (booking.status === 'cancelled') {
+      return res.status(400).json({ error: 'Booking is already cancelled' });
+    }
+
+    db.prepare('UPDATE bookings SET status = ? WHERE id = ?')
+      .run('cancelled', req.params.id);
+
+    return res.json({ message: 'Booking cancelled' });
   }
 
-  const booking = db.prepare('SELECT * FROM bookings WHERE id = ? AND customer_id = ?')
-    .get(req.params.id, req.user.userId);
+  // Barbers can confirm, complete, or cancel
+  if (req.user.role === 'barber') {
+    if (!['confirmed', 'completed', 'cancelled'].includes(status)) {
+      return res.status(400).json({ error: 'Invalid status' });
+    }
 
-  if (!booking) {
-    return res.status(404).json({ error: 'Booking not found' });
+    const booking = db.prepare(`
+      SELECT b.* FROM bookings b
+      JOIN services s ON b.service_id = s.id
+      WHERE b.id = ? AND s.barber_id = ?
+    `).get(req.params.id, req.user.userId);
+
+    if (!booking) {
+      return res.status(404).json({ error: 'Booking not found' });
+    }
+
+    db.prepare('UPDATE bookings SET status = ? WHERE id = ?')
+      .run(status, req.params.id);
+
+    return res.json({ message: `Booking ${status}` });
   }
-
-  if (booking.status === 'cancelled') {
-    return res.status(400).json({ error: 'Booking is already cancelled' });
-  }
-
-  db.prepare('UPDATE bookings SET status = ? WHERE id = ?')
-    .run('cancelled', req.params.id);
-
-  res.json({ message: 'Booking cancelled' });
 });
-
 // Start the server
 app.listen(port, () => { 
 	console.log(`Server running on http://localhost:${port}`);

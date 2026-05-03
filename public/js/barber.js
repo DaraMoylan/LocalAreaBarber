@@ -227,12 +227,43 @@ async function loadBookings() {
 	}
 
 	bookingsList.innerHTML = bookings.map(booking =>
-		`<div class="card">
-		<strong>${booking.service_name}</strong>
-		<p>${booking.customer_first_name} ${booking.customer_last_name}</p>
-		<p>${formatDate(booking.booking_datetime)} - ${booking.status}</p>
-		</div>`
-	).join('');
+    `<div class="card">
+    <strong>${booking.service_name}</strong>
+    <p>${booking.customer_first_name} ${booking.customer_last_name}</p>
+    <p>${formatDate(booking.booking_datetime)} - ${booking.status}</p>
+    ${booking.status === 'pending' ? 
+      `<button class="edit-btn" onclick="updateBooking(${booking.id}, 'confirmed')">Confirm</button>
+       <button class="cancel-btn" onclick="updateBooking(${booking.id}, 'cancelled')">Cancel</button>` : ''}
+    ${booking.status === 'confirmed' ? 
+      `<button class="edit-btn" onclick="updateBooking(${booking.id}, 'completed')">Complete</button>
+       <button class="cancel-btn" onclick="updateBooking(${booking.id}, 'cancelled')">Cancel</button>` : ''}
+    </div>`
+).join('');
+}
+
+/*
+* Function to update the status of a booking
+*/
+async function updateBooking(bookingId, status) {
+  document.getElementById('message').textContent = '';
+
+  const response = await fetch(`/bookings/${bookingId}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({ status })
+  });
+
+  const data = await response.json();
+
+  if (response.ok) {
+    document.getElementById('message').textContent = data.message;
+    loadBookings();
+  } else {
+    document.getElementById('message').textContent = data.error;
+  }
 }
 
 /*
