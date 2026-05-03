@@ -55,6 +55,8 @@ function formatDate(dateString) {
 */
 function selectBarber(barberId) { 
 // Remove selected from all barber cards
+// clear the message 
+	document.getElementById('message').textContent = '';
 	document.querySelectorAll('#barber-list .card').forEach(card => {
 		card.classList.remove('selected');
 	});
@@ -109,6 +111,7 @@ async function loadServices(barberId) {
 
 function selectService(serviceId, event) { 
 
+	document.getElementById('message').textContent = '';
 	document.querySelectorAll('#services-list .card').forEach(card => {
 		card.classList.remove('selected');
 	});
@@ -118,6 +121,7 @@ function selectService(serviceId, event) {
 }
 
 async function createBooking() { 
+	document.getElementById('message').textContent = '';
 	const bookingTime = document.getElementById('booking-time').value;
 	
 	// check input validation
@@ -179,6 +183,7 @@ async function loadBookings() {
 * @param {number} bookingId - The ID of the booking of a barber service
 */
 async function cancelBooking(bookingId) { 
+	document.getElementById('message').textContent = '';
 	const response = await fetch(`/bookings/${bookingId}`, {
 		method: 'PATCH',
 		headers: { 
@@ -192,6 +197,7 @@ async function cancelBooking(bookingId) {
 
 	if(response.ok) {
 		loadBookings();
+		document.getElementById('message').textContent = 'Booking cancelled';
 	} else {
 		document.getElementById('message').textContent = data.error;
 	}

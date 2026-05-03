@@ -114,6 +114,7 @@ function cancelEdit(serviceId) {
 * hit the /services endpoint
 */
 async function addService() { 
+	document.getElementById('message').textContent = '';
 	const name = document.getElementById('service-name').value;
 	const duration_minutes = document.getElementById('service-duration').value;
 	const price = document.getElementById('service-price').value;
@@ -151,6 +152,7 @@ async function addService() {
 * replaces the original service in the services table with a new one with the same serviceId
 */
 async function saveEdit(serviceId) { 
+	document.getElementById('message').textContent = '';
 	const name = document.getElementById(`edit-name-${serviceId}`).value;
 	const duration_minutes = document.getElementById(`edit-duration-${serviceId}`).value;
 	const price = document.getElementById(`edit-price-${serviceId}`).value;
@@ -180,6 +182,7 @@ async function saveEdit(serviceId) {
 *  hit the /services/serviceId endpoint with a DELETE request
 */
 async function deleteService(serviceId) { 
+	document.getElementById('message').textContent = '';
 	
 	if(!confirm('Are you sure you want to delete this service?')) { 
 		return;
