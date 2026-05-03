@@ -36,12 +36,40 @@ if(payload.role !== 'customer') {
 }
 document.getElementById('customer-name').textContent = payload.firstName;
 
+/*
+* function to format the Dates 
+*/
+function formatDate(dateString) { 
+	const date = new Date(dateString);
+	return date.toLocaleString('en-IE', {
+		day: 'numeric',
+		month: 'short',
+		year: 'numeric',
+		hour: '2-digit',
+		minute: '2-digit'
+	});
+}
+
+/*
+* Function to highlight the particular barber you clicked on
+*/
+function selectBarber(barberId) { 
+// Remove selected from all barber cards
+// clear the message 
+	document.getElementById('message').textContent = '';
+	document.querySelectorAll('#barber-list .card').forEach(card => {
+		card.classList.remove('selected');
+	});
+
+	// Add selected to the clicked one
+	document.getElementById(`barber-${barberId}`).classList.add('selected');
+	loadServices(barberId);
+}
+
 let selectedServiceId = null;
 
 // function to load barbers by querying /barbers endpoint
 async function loadBarbers() {
-
-	// Add loading state while function fetches
 	const barberList = document.getElementById('barber-list');
 	barberList.innerHTML = '<p>Loading barbers...</p>';
 
@@ -52,9 +80,9 @@ async function loadBarbers() {
 		barberList.innerHTML = '<p>No barbers available</p>';
 		return;
 	}
-// manual DOM manipulation
+
 	barberList.innerHTML = barbers.map(barber => 
-		`<div class="card" onclick="loadServices(${barber.id})">
+		`<div class="card" id="barber-${barber.id}" onclick="selectBarber(${barber.id})">
 		${barber.first_name} ${barber.last_name}
 		</div>`
 	).join('');
@@ -74,19 +102,26 @@ async function loadServices(barberId) {
 	}
 
 	servicesList.innerHTML = services.map(service => 
-		`<div class="card" onclick="selectService(${service.id})">
+		`<div class="card" id="service-${service.id}" onclick="selectService(${service.id})">
 		<strong>${service.name}</strong>
 		<p>${service.duration_minutes} mins - €${service.price}</p>
 		</div>`
 	).join('');
 }
 
-function selectService(serviceId) { 
+function selectService(serviceId, event) { 
+
+	document.getElementById('message').textContent = '';
+	document.querySelectorAll('#services-list .card').forEach(card => {
+		card.classList.remove('selected');
+	});
+	document.getElementById(`service-${serviceId}`).classList.add('selected');
 	selectedServiceId = serviceId;
 	document.getElementById('booking-section').style.display = 'block';
 }
 
 async function createBooking() { 
+	document.getElementById('message').textContent = '';
 	const bookingTime = document.getElementById('booking-time').value;
 	
 	// check input validation
@@ -137,7 +172,7 @@ async function loadBookings() {
 	bookingsList.innerHTML = bookings.map(booking =>
 		`<div class="card">
      	 <strong>${booking.service_name}</strong> with ${booking.barber_first_name} ${booking.barber_last_name}
-     	 <p>${booking.booking_datetime} - ${booking.status}</p>
+     	 <p>${formatDate(booking.booking_datetime)} - ${booking.status}</p>
      		 ${booking.status !== 'cancelled' ?
         `<button class="cancel-btn" onclick="cancelBooking(${booking.id})">Cancel</button>` : ''}
    	 </div>`
@@ -148,6 +183,7 @@ async function loadBookings() {
 * @param {number} bookingId - The ID of the booking of a barber service
 */
 async function cancelBooking(bookingId) { 
+	document.getElementById('message').textContent = '';
 	const response = await fetch(`/bookings/${bookingId}`, {
 		method: 'PATCH',
 		headers: { 
@@ -161,6 +197,7 @@ async function cancelBooking(bookingId) {
 
 	if(response.ok) {
 		loadBookings();
+		document.getElementById('message').textContent = 'Booking cancelled';
 	} else {
 		document.getElementById('message').textContent = data.error;
 	}

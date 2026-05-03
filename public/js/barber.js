@@ -39,6 +39,20 @@ if(payload.role !== 'barber') {
 document.getElementById('barber-name').textContent = payload.firstName;
 
 /*
+* function to format the Dates 
+*/
+function formatDate(dateString) { 
+	const date = new Date(dateString);
+	return date.toLocaleString('en-IE', {
+		day: 'numeric',
+		month: 'short',
+		year: 'numeric',
+		hour: '2-digit',
+		minute: '2-digit'
+	});
+}
+
+/*
 * Function that his the /services endpoint
 * requires the requireBarber token
 */
@@ -100,6 +114,7 @@ function cancelEdit(serviceId) {
 * hit the /services endpoint
 */
 async function addService() { 
+	document.getElementById('message').textContent = '';
 	const name = document.getElementById('service-name').value;
 	const duration_minutes = document.getElementById('service-duration').value;
 	const price = document.getElementById('service-price').value;
@@ -137,6 +152,7 @@ async function addService() {
 * replaces the original service in the services table with a new one with the same serviceId
 */
 async function saveEdit(serviceId) { 
+	document.getElementById('message').textContent = '';
 	const name = document.getElementById(`edit-name-${serviceId}`).value;
 	const duration_minutes = document.getElementById(`edit-duration-${serviceId}`).value;
 	const price = document.getElementById(`edit-price-${serviceId}`).value;
@@ -166,6 +182,7 @@ async function saveEdit(serviceId) {
 *  hit the /services/serviceId endpoint with a DELETE request
 */
 async function deleteService(serviceId) { 
+	document.getElementById('message').textContent = '';
 	
 	if(!confirm('Are you sure you want to delete this service?')) { 
 		return;
@@ -210,12 +227,43 @@ async function loadBookings() {
 	}
 
 	bookingsList.innerHTML = bookings.map(booking =>
-		`<div class="card">
-		<strong>${booking.service_name}</strong>
-		<p>${booking.customer_first_name} ${booking.customer_last_name}</p>
-		<p>${booking.booking_datetime} - ${booking.status}</p>
-		</div>`
-	).join('');
+    `<div class="card">
+    <strong>${booking.service_name}</strong>
+    <p>${booking.customer_first_name} ${booking.customer_last_name}</p>
+    <p>${formatDate(booking.booking_datetime)} - ${booking.status}</p>
+    ${booking.status === 'pending' ? 
+      `<button class="edit-btn" onclick="updateBooking(${booking.id}, 'confirmed')">Confirm</button>
+       <button class="cancel-btn" onclick="updateBooking(${booking.id}, 'cancelled')">Cancel</button>` : ''}
+    ${booking.status === 'confirmed' ? 
+      `<button class="edit-btn" onclick="updateBooking(${booking.id}, 'completed')">Complete</button>
+       <button class="cancel-btn" onclick="updateBooking(${booking.id}, 'cancelled')">Cancel</button>` : ''}
+    </div>`
+).join('');
+}
+
+/*
+* Function to update the status of a booking
+*/
+async function updateBooking(bookingId, status) {
+  document.getElementById('message').textContent = '';
+
+  const response = await fetch(`/bookings/${bookingId}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({ status })
+  });
+
+  const data = await response.json();
+
+  if (response.ok) {
+    document.getElementById('message').textContent = data.message;
+    loadBookings();
+  } else {
+    document.getElementById('message').textContent = data.error;
+  }
 }
 
 /*
