@@ -146,11 +146,13 @@ async function createBooking() {
 
 	if(response.ok) { 
 		document.getElementById('message').textContent = 'Booking confirmed!';
+		document.getElementById('message').style.color = '#27ae60';
 		document.getElementById('booking-section').style.display = 'none';
 		document.getElementById('services-section').style.display = 'none';
 		loadBookings();
 	} else { 
 		document.getElementById('message').textContent = data.error;
+		document.getElementById('message').style.color = '#e74c3c';
 	}
 }
 
@@ -198,8 +200,10 @@ async function cancelBooking(bookingId) {
 	if(response.ok) {
 		loadBookings();
 		document.getElementById('message').textContent = 'Booking cancelled';
+		document.getElementById('message').style.color = '#27ae60';
 	} else {
 		document.getElementById('message').textContent = data.error;
+		document.getElementById('message').style.color = '#e74c3c';
 	}
 }
 

@@ -141,9 +141,11 @@ async function addService() {
 		document.getElementById('service-duration').value = '';
 		document.getElementById('service-price').value = '';
 		document.getElementById('message').textContent = 'Service added!';
+    		document.getElementById('message').style.color = '#27ae60';
 		loadServices();
 	} else {
 		document.getElementById('message').textContent = data.error;
+		document.getElementById('message').style.color = '#e74c3c';
 	}
 }
 
@@ -171,9 +173,11 @@ async function saveEdit(serviceId) {
 	// check that response was ok
 	if(response.ok) {
 		document.getElementById('message').textContent = 'Service updated!';
+                document.getElementById('message').style.color = '#27ae60';
 		loadServices();
 	} else {
 		document.getElementById('message').textContent = data.error;
+		document.getElementById('message').style.color = '#e74c3c';
 	}
 }
 
@@ -199,9 +203,11 @@ async function deleteService(serviceId) {
 
 	if(response.ok) {
 		document.getElementById('message').textContent = 'Service successfully deleted!';
+    		document.getElementById('message').style.color = '#27ae60';
 		loadServices();
 	} else {
 		document.getElementById('message').textContent = data.error;
+		document.getElementById('message').style.color = '#e74c3c';
 	}
 }
 
@@ -260,9 +266,11 @@ async function updateBooking(bookingId, status) {
 
   if (response.ok) {
     document.getElementById('message').textContent = data.message;
+    document.getElementById('message').style.color = '#27ae60';
     loadBookings();
   } else {
     document.getElementById('message').textContent = data.error;
+    document.getElementById('message').style.color = '#e74c3c';
   }
 }
 
