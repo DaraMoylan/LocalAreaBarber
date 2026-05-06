@@ -143,6 +143,7 @@ async function addService() {
 		document.getElementById('message').textContent = 'Service added!';
     		document.getElementById('message').style.color = '#27ae60';
 		loadServices();
+		showTab('services');
 	} else {
 		document.getElementById('message').textContent = data.error;
 		document.getElementById('message').style.color = '#e74c3c';
@@ -292,5 +293,21 @@ function logout() {
 	window.location.href = '/login.html';
 }
 
+/*
+* function to change tabs
+*/
+function showTab(tab) {
+  // Hide all panels
+	document.querySelectorAll('.tab-panel').forEach(panel => {
+	panel.style.display = 'none';
+	});
+	// Remove active from all tabs
+	document.querySelectorAll('.tab').forEach(t => {
+		t.classList.remove('active');
+	});
+	// Show selected panel and activate tab
+	document.getElementById(`${tab}-panel`).style.display = 'block';
+	document.getElementById(`${tab}-tab`).classList.add('active');
+}
 loadServices();
 loadBookings();
