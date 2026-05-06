@@ -94,6 +94,7 @@ button:hover {
 #message {
   text-align: center;
   margin-top: 15px;
+  margin-bottom: 30px; 
   color: #e74c3c;
   font-size: 18px;
   font-weight: bold;
