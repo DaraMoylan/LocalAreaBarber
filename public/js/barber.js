@@ -232,7 +232,14 @@ async function loadBookings() {
 		return;
 	}
 
-	bookingsList.innerHTML = bookings.map(booking =>
+	// Filter out the cancelled bookings
+	const activeBookings = bookings.filter(booking => booking.status !== 'cancelled');
+	if(activeBookings.length === 0) {
+		bookingsList.innerHTML = '<p>No bookings yet</p>';
+		return;
+	}
+
+	bookingsList.innerHTML = activeBookings.map(booking =>
     `<div class="card">
     <strong>${booking.service_name}</strong>
     <p>${booking.customer_first_name} ${booking.customer_last_name}</p>
