@@ -94,6 +94,7 @@ button:hover {
 #message {
   text-align: center;
   margin-top: 15px;
+  margin-bottom: 30px; 
   color: #e74c3c;
   font-size: 18px;
   font-weight: bold;
@@ -104,9 +105,6 @@ button:hover {
   background: linear-gradient(180deg, #ff85c8, #ff69b4);
 }
 
-.dashboard-header h1 {
-  margin-bottom: 10px;
-}
 
 .logout-btn {
   width: auto;
@@ -164,4 +162,16 @@ button:hover {
   margin-bottom: 20px;
   color: #666;
   font-size: 16px;
+}
+.dashboard-header h1 { 
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  margin-bottom: 10px;
+}
+.tab-panel {
+  margin-top: 15px;
+}
+.container h2 {
+  text-align: center;
+  margin-bottom: 20px;
 }
